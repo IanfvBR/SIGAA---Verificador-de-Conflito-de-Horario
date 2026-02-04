@@ -122,13 +122,51 @@ class ConflictManager {
         this.all_subjects = all_subjects;
         this.selection = [];
         this.initialize();
-        console.log("initialized");
+        this.create_box();
     }
+
 
     initialize() {
         for (const subject of this.all_subjects) {
             subject.update_message(POSITIVE_MESSAGE);
         }
+    }
+
+
+    create_box() {
+        const box = document.createElement("fieldset");
+        const legend = document.createElement("legend");
+        const output_box = document.createElement("output");
+
+        output_box.id = "content_script_output_box";
+        box.style = "float: right; width: 20%;"
+        box.id = "content_script";
+        legend.textContent = "Disciplinas Selecionadas";
+
+        legend.appendChild(output_box);
+        box.appendChild(legend);
+    }
+
+
+    send_to_box(index) {
+        const entry = document.createElement("p");
+        const name = document.createElement("label");
+        const timestring = document.createElement("label");
+        const subject = this.all_subjects[index];
+
+        entry.id = `content_script#${index}`;
+        name.textContent = subject.name;
+        timestring.textContent = `${subject.days.join(""), subject.shifts.join(""), subject.hours.join("")}`
+        timestring.style = "float: right;";
+        entry.appendChild(name);
+        entry.appendChild(timestring);
+
+        document.getElementById("content_script_output_box").appendChild(entry);
+    }
+
+
+    remove_from_box(index) {
+        document.getElementById(`content_script#${index}`).remove();
     }
 
     update_conflicts() {
@@ -168,6 +206,7 @@ class ConflictManager {
                 this.all_subjects[index].update_message(POSITIVE_MESSAGE);
             }
             this.selection.push(index);
+            this.send_to_box(index);
             this.update_conflicts();
         }
     }
@@ -175,6 +214,7 @@ class ConflictManager {
     unselect_subject(index) {
         this.selection.splice(index,1);
         this.update_conflicts();
+        this.remove_from_box(index);
     }
 }
 
@@ -211,6 +251,9 @@ function simulate_input(conflict_manager) {
 function listen_to_user_input(conflict_manager) {
     /* Aguardando o periodo de matrícula/rematrícula para implementar essa função */
 }
+
+
+
 
 function main() {
     const lines = document.querySelectorAll(".linhaPar, .linhaImpar");
