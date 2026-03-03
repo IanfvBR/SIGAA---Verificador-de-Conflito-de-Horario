@@ -23,6 +23,11 @@
     }
   },
 
+  "permissions": [
+    "activeTab",
+    "scripting"
+],
+
   "action": {
     "default_icon": "icons/icon32.png",
     "default_title": "Clique para executar"
